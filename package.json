@@ -1,0 +1,104 @@
+{
+  "name": "@elizaos/plugin-fair",
+  "description": "Skale Idealistic testnet integration plugin for ElizaOS supporting wallet management, token operations, and Uniswap V2 interactions",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "packageType": "plugin",
+  "platform": "node",
+  "license": "MIT",
+  "author": "ElizaOS Contributors",
+  "keywords": [
+    "plugin",
+    "elizaos",
+    "skale",
+    "idealistic",
+    "blockchain",
+    "defi",
+    "uniswap",
+    "swap",
+    "liquidity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elizaos/eliza.git",
+    "directory": "packages/plugin-fair"
+  },
+  "homepage": "https://elizaos.ai",
+  "bugs": {
+    "url": "https://github.com/elizaos/eliza/issues"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    ".npmignore",
+    "package.json",
+    "tsup.config.ts"
+  ],
+  "dependencies": {
+    "@elizaos/core": "latest",
+    "@skalenetwork/bite": "^0.4.0",
+    "@tanstack/react-query": "^5.80.7",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.10",
+    "viem": "^2.31.4",
+    "vite": "^6.3.5",
+    "zod": "^3.25.32"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "@cypress/react": "^9.0.1",
+    "@elizaos/cli": "latest",
+    "@tailwindcss/vite": "^4.1.10",
+    "@testing-library/cypress": "^10.0.3",
+    "@vitejs/plugin-react-swc": "^3.10.2",
+    "cypress": "^14.4.1",
+    "dotenv": "16.4.5",
+    "prettier": "3.5.3",
+    "tailwindcss-animate": "^1.0.7",
+    "tsup": "8.5.0",
+    "typescript": "5.8.2"
+  },
+  "scripts": {
+    "start": "elizaos start",
+    "dev": "elizaos dev",
+    "build": "tsup",
+    "lint": "prettier --write ./src",
+    "test:component": "bun run test:install && bun test",
+    "test:e2e": "bun run test:install && bun test",
+    "test:e2e:manual": "bun run test:install && node scripts/test-e2e-manual.js",
+    "test:cypress": "bun run test:install && cypress run --component",
+    "test": "bun run test:install && bun run test:component && bun run test:e2e",
+    "test:install": "node scripts/install-test-deps.js",
+    "publish": "elizaos publish",
+    "format": "prettier --write ./src",
+    "format:check": "prettier --check ./src"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "agentConfig": {
+    "pluginType": "elizaos:plugin:1.0.0",
+    "pluginParameters": {
+      "SKALE_PRIVATE_KEY": {
+        "type": "string",
+        "description": "Hex-encoded private key (starting with 0x) used by the WalletProvider to sign governance proposal and bridge transactions.",
+        "required": true,
+        "sensitive": true
+      }
+    }
+  },
+  "gitHead": "d5bd5c43bfebeb7ac02f9e029f924cb6cd5c2ec7"
+}
