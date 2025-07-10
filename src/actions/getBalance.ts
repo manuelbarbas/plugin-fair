@@ -12,7 +12,7 @@ import {
 
 import {
   initWalletProvider,
-  initSkaleWalletProvider,
+  initFairWalletProvider,
   type WalletProvider,
 } from '../providers/wallet';
 import { getBalanceTemplate } from '../templates';
@@ -73,7 +73,6 @@ export class GetBalanceAction {
       if (token.startsWith('0x')) {
         amount = await this.getERC20TokenBalance(chainName, address, token as `0x${string}`);
       } else {
-        // For Skale, we use our predefined token list
         const tokenAddress = this.walletProvider.getChainToken(params.chainName, token);
         if (!tokenAddress) {
           throw new Error(`Token ${token} is not supported.`);
@@ -162,14 +161,6 @@ export class GetBalanceAction {
         return;
       }
 
-      // Try to resolve as web3 name
-      /*elizaLogger.debug(`Attempting to resolve address as Web3Name: ${params.address}`);
-      const resolvedAddress = await this.walletProvider.resolveWeb3Name(params.address);
-      if (resolvedAddress) {
-        elizaLogger.debug(`Resolved Web3Name to address: ${resolvedAddress}`);
-        params.address = resolvedAddress as Address;
-        return;
-      }*/
 
       // If we can't resolve, but it looks like a potential wallet address, try to use it
       if (addressStr.startsWith('0x')) {
@@ -239,7 +230,7 @@ export const getBalanceAction = {
     };
 
     try {
-      const walletProvider = initSkaleWalletProvider(runtime);
+      const walletProvider = initFairWalletProvider(runtime);
       const action = new GetBalanceAction(walletProvider);
       const getBalanceResp = await action.getBalance(getBalanceOptions);
       if (callback) {
@@ -263,7 +254,7 @@ export const getBalanceAction = {
       let userMessage = `Get balance failed: ${errorMessage}`;
 
       // Check for common error cases
-      if (errorMessage.includes('not supported on Skale')) {
+      if (errorMessage.includes('not supported on Fair')) {
         userMessage = `Token not supported. ${errorMessage}`;
       } else if (errorMessage.includes('No URL was provided')) {
         userMessage = `Network connection issue. Please try again later.`;
@@ -353,13 +344,13 @@ export const getBalanceAction = {
       {
         name: '{{user1}}',
         content: {
-          text: 'Check my wallet balance on Skale',
+          text: 'Check my wallet balance on Fair',
         },
       },
       {
         name: '{{agent}}',
         content: {
-          text: "I'll help you check your wallet balance on Skale",
+          text: "I'll help you check your wallet balance on Fair",
           action: 'GET_BALANCE',
           content: {
             chain: 'fair-testnet',

@@ -8,11 +8,8 @@ import {
   type Memory,
   type State,
   type Content,
-  type Action,
 } from '@elizaos/core';
 import {
-  formatEther,
-  formatUnits,
   parseEther,
   parseUnits,
   erc20Abi,
@@ -22,7 +19,7 @@ import {
 
 import {
   initWalletProvider,
-  initSkaleWalletProvider,
+  initFairWalletProvider,
   type WalletProvider,
 } from '../providers/wallet';
 
@@ -71,7 +68,7 @@ export class TransferAction {
 
     const chainNativeToken = this.walletProvider.getChainNativetToken(params.chainName);
 
-    await this.validateAndNormalizeParams(params);
+    this.validateAndNormalizeParams(params);
     elizaLogger.debug('After address validation, params:', JSON.stringify(params, null, 2));
 
     const fromAddress = this.walletProvider.getAddress();
@@ -84,7 +81,6 @@ export class TransferAction {
     const publicClient = this.walletProvider.getPublicClient(params.chainName);
     const walletClient = this.walletProvider.getWalletClient(params.chainName);
 
-    // CRITICAL: Ensure token is never null before proceeding
     if (!params.token || params.token === 'null' || params.token === '') {
       params.token = nativeToken;
       elizaLogger.debug(`Setting null/empty token to native token: ${nativeToken}`);
@@ -208,11 +204,11 @@ export class TransferAction {
     }
   }
 
-  async validateAndNormalizeParams(params: TransferParams): Promise<void> {
+  validateAndNormalizeParams(params: TransferParams): void {
     if (!params.toAddress) {
       throw new Error('To address is required');
     }
-    params.toAddress = await this.walletProvider.formatAddress(params.toAddress);
+    params.toAddress = this.walletProvider.formatAddress(params.toAddress);
 
     // Validate amount if provided
     if (params.amount !== undefined && params.amount !== null) {
@@ -253,7 +249,7 @@ export const transferAction = {
     // Direct nativeToken token detection - look for explicit mentions of native token
     const containsNative =
       promptLower.includes('fair') ||
-      promptLower.includes('skale native token') ||
+      promptLower.includes('Fair native token') ||
       promptLower.includes('gas token') ||
       promptLower.includes('gas') ||
       promptLower.includes('native token');
@@ -282,14 +278,6 @@ export const transferAction = {
 
     elizaLogger.debug('Prompt analysis result:', promptAnalysis);
 
-    // Validate transfer
-    /* if (!(message.content.source === 'direct')) {
-      callback?.({
-        text: "I can't do that for you.",
-        content: { error: 'Transfer not allowed' },
-      });
-      return false;
-    }*/
 
     // Update state with recent messages
     let currentState = await runtime.composeState(message, ['RECENT_MESSAGES']);
@@ -404,10 +392,10 @@ export const transferAction = {
     elizaLogger.debug('Transfer params before action:', JSON.stringify(paramOptions, null, 2));
 
     try {
-      const walletProvider = initSkaleWalletProvider(runtime);
+      const walletProvider = initFairWalletProvider(runtime);
       const action = new TransferAction(walletProvider);
 
-      const biteConfig: BiteConfig = walletProvider.getBiteConfig();
+      const biteConfig: BiteConfig = walletProvider.getBITEConfig();
 
       elizaLogger.debug('Calling transfer with params:', JSON.stringify(paramOptions, null, 2));
 
@@ -435,7 +423,7 @@ export const transferAction = {
       let errorMessage = errorMsg;
 
       // Check for common error cases
-      if (errorMsg.includes('not supported on Skale')) {
+      if (errorMsg.includes('not supported on Fair')) {
         errorMessage = `Token not supported. ${errorMsg}`;
       } else if (errorMsg.includes('insufficient funds')) {
         errorMessage = `Insufficient funds for the transaction. Please check your balance and try again with a smaller amount.`;
@@ -458,8 +446,6 @@ export const transferAction = {
     return typeof privateKey === 'string' && privateKey.startsWith('0x');
   },
   examples: [
-    // Additional examples to add to the transferAction examples array:
-
     [
       {
         name: '{{user1}}',

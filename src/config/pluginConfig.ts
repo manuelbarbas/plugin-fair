@@ -1,6 +1,5 @@
 import { PluginConfig, ChainConfig, DEFAULT_PLUGIN_CONFIG } from '../types';
 import { isAddress } from 'viem';
-import { elizaLogger } from '@elizaos/core';
 export class PluginConfigManager {
   private config: PluginConfig;
 

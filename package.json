@@ -1,6 +1,6 @@
 {
   "name": "@elizaos/plugin-fair",
-  "description": "Skale Idealistic testnet integration plugin for ElizaOS supporting wallet management, token operations, and Uniswap V2 interactions",
+  "description": "FAIR Network integration on ElizaOS. This plugin allow to perform encrypted on-chain operations using the ElizaOS AI Agent",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
@@ -14,22 +14,12 @@
     "plugin",
     "elizaos",
     "skale",
-    "idealistic",
+    "fair",
+    "bite",
     "blockchain",
     "defi",
-    "uniswap",
-    "swap",
-    "liquidity"
+    "swap"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/elizaos/eliza.git",
-    "directory": "packages/plugin-fair"
-  },
-  "homepage": "https://elizaos.ai",
-  "bugs": {
-    "url": "https://github.com/elizaos/eliza/issues"
-  },
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -60,7 +50,7 @@
   "peerDependencies": {},
   "devDependencies": {
     "@cypress/react": "^9.0.1",
-    "@elizaos/cli": "latest",
+    "@elizaos/cli": "1.2.0",
     "@tailwindcss/vite": "^4.1.10",
     "@testing-library/cypress": "^10.0.3",
     "@vitejs/plugin-react-swc": "^3.10.2",
@@ -92,7 +82,7 @@
   "agentConfig": {
     "pluginType": "elizaos:plugin:1.0.0",
     "pluginParameters": {
-      "SKALE_PRIVATE_KEY": {
+      "EVM_WALLET_PRIVATE_KEY": {
         "type": "string",
         "description": "Hex-encoded private key (starting with 0x) used by the WalletProvider to sign governance proposal and bridge transactions.",
         "required": true,

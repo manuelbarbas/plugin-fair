@@ -13,15 +13,15 @@ import { initWalletProvider } from './providers/wallet';
 
 const actions = [getBalanceAction, transferAction, swapAction];
 
-// Create plugin object directly matching the Skale plugin pattern
-export const skalePlugin: Plugin = {
-  name: 'skale',
+// Create plugin object directly matching the Fair plugin pattern
+export const fairPlugin: Plugin = {
+  name: 'fair',
   description:
-    'Skale Idealistic testnet integration plugin supporting transfers, swaps, and liquidity operations using Uniswap V2',
+    'Fair Idealistic testnet integration plugin supporting transfers, swaps, and liquidity operations using Uniswap V2',
   providers: [initWalletProvider],
   services: [],
   actions: actions as any,
   evaluators: [],
 };
 
-export default skalePlugin;
+export default fairPlugin;

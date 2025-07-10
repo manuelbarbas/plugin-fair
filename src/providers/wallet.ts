@@ -19,6 +19,8 @@ import type { PluginConfig, ChainConfig, EVMTransaction, Transaction, BiteConfig
 import { PluginConfigManager } from '../config/pluginConfig';
 import { BiteMiddleware } from './biteMiddleware';
 
+import {getBiteConfig,getPluginConfig,getWalletConfig } from "../environment";
+
 export class WalletProvider {
   account!: PrivateKeyAccount;
 
@@ -48,11 +50,6 @@ export class WalletProvider {
 
   getAddress(): Address {
     return this.account.address;
-  }
-
-  getPrivateKey(): Hex {
-    // @ts-ignore - accessing private property for compatibility
-    return this.account.privateKey;
   }
 
   getCurrentChain(chainName: string): Chain {
@@ -129,7 +126,7 @@ export class WalletProvider {
     return walletClient;
   }
 
-  getBiteConfig(): BiteConfig {
+  getBITEConfig(): BiteConfig {
     return this.biteConfig;
   }
 
@@ -143,7 +140,7 @@ export class WalletProvider {
     return true;
   }
 
-  async formatAddress(address: string | null | undefined): Promise<Address> {
+  formatAddress(address: string | null | undefined): Address{
     // If address is null or undefined, use the wallet's own address
     if (address === null || address === undefined) {
       elizaLogger.debug("Address is null or undefined, using wallet's own address");
@@ -163,16 +160,6 @@ export class WalletProvider {
     if (addressStr.startsWith('0x') && addressStr.length === 42) {
       elizaLogger.debug(`Using valid hex address: ${addressStr}`);
       return addressStr as Address;
-    }
-
-    // Skip name resolution for common tokens that might be mistakenly
-    // passed as addresses
-    const commonTokens = ['FAIR', 'USDT', 'USDC', 'SKL', 'WFAIR'];
-    if (commonTokens.includes(addressStr.toUpperCase())) {
-      elizaLogger.debug(
-        `Value appears to be a token symbol, not an address: ${addressStr}. Using wallet's own address.`
-      );
-      return this.getAddress();
     }
 
     // If we can't resolve the name but it looks like a potential address
@@ -259,40 +246,25 @@ export class WalletProvider {
   };
 }
 
-const getPluginConfigFromRuntime = (runtime: IAgentRuntime): Partial<PluginConfig> => {
-  const pluginConfig = runtime.getSetting('PLUGIN_CONFIG') as Partial<PluginConfig>;
 
-  return pluginConfig;
-};
+export const initFairWalletProvider = (runtime: IAgentRuntime): WalletProvider => {
+  const privateKey = getWalletConfig(runtime);
+  const pluginConfig = getPluginConfig(runtime);
+  const biteConfig = getBiteConfig(runtime);
 
-const getBiteConfig = (runtime: IAgentRuntime): Partial<BiteConfig> => {
-  const biteConfig = runtime.getSetting('biteConfig') as Partial<BiteConfig>;
-
-  return biteConfig;
-};
-
-export const initSkaleWalletProvider = (runtime: IAgentRuntime) => {
-  const privateKey = runtime.getSetting('EVM_WALLET_PRIVATE_KEY');
-  if (!privateKey) {
-    throw new Error('EVM_WALLET_PRIVATE_KEY is missing');
-  }
-
-  const config = getPluginConfigFromRuntime(runtime);
-  const biteConfig: BiteConfig = getBiteConfig(runtime);
-
-  if (config) return new WalletProvider(privateKey as `0x${string}`, biteConfig, config);
+  if (pluginConfig) return new WalletProvider(privateKey as `0x${string}`, biteConfig, pluginConfig);
   else return new WalletProvider(privateKey as `0x${string}`, biteConfig);
 };
 
 export const initWalletProvider: Provider = {
-  name: 'skaleWallet',
+  name: 'fairWallet',
   description:
-    'Provides Skale Idealistic testnet wallet information including address, balance, and chain details',
+    'Provides Fair testnet wallet information including address, balance, and chain details',
   async get(runtime: IAgentRuntime, _message: Memory, _state: State) {
     try {
-      const walletProvider = initSkaleWalletProvider(runtime);
+      const walletProvider = initFairWalletProvider(runtime);
       const address = walletProvider.getAddress();
-      const walletInfo = `Skale Idealistic Wallet Address: ${address}`;
+      const walletInfo = `Fair Wallet Address: ${address}`;
 
       return {
         text: walletInfo,
@@ -301,7 +273,7 @@ export const initWalletProvider: Provider = {
         },
       };
     } catch (error) {
-      elizaLogger.error('Error in Skale wallet provider:', error);
+      elizaLogger.error('Error in Fair wallet provider:', error);
       return {
         text: 'Error retrieving wallet information',
         data: { error: error instanceof Error ? error.message : String(error) },

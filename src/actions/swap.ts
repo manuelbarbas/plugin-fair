@@ -11,9 +11,7 @@ import {
   type Action,
 } from '@elizaos/core';
 import {
-  formatEther,
   formatUnits,
-  parseEther,
   parseUnits,
   erc20Abi,
   type Hex,
@@ -22,7 +20,7 @@ import {
 
 import {
   initWalletProvider,
-  initSkaleWalletProvider,
+  initFairWalletProvider,
   type WalletProvider,
 } from '../providers/wallet';
 import { swapTemplate } from '../templates';
@@ -528,10 +526,10 @@ export const swapAction = {
     elizaLogger.debug('Final swap params:', JSON.stringify(finalParams, null, 2));
 
     try {
-      const walletProvider = initSkaleWalletProvider(runtime);
+      const walletProvider = initFairWalletProvider(runtime);
       const action = new SwapAction(walletProvider);
 
-      const biteConfig: BiteConfig = walletProvider.getBiteConfig();
+      const biteConfig: BiteConfig = walletProvider.getBITEConfig();
 
       const swapResp = await action.swap(finalParams);
 
@@ -576,8 +574,6 @@ export const swapAction = {
     return typeof privateKey === 'string' && privateKey.startsWith('0x');
   },
   examples: [
-    // Additional examples to add to the swapAction examples array:
-
     [
       {
         name: '{{user1}}',
