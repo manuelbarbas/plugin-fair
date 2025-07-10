@@ -1,0 +1,23 @@
+{
+  "v1": {
+    "packages": {}
+  },
+  "v2": {
+    "packages": {
+      "@manuelbarbas/plugin-fair": {
+        "name": "@manuelbarbas/plugin-fair",
+        "description": "FAIR Network integration on ElizaOS. This plugin allow to perform encrypted on-chain operations using the ElizaOS AI Agent",
+        "type": "module",
+        "versions": {
+          "0.1.0": {
+            "version": "0.1.0",
+            "runtimeVersion": "1.2.0",
+            "platform": "node",
+            "publishedAt": "2025-07-10T09:37:56.624Z",
+            "published": false
+          }
+        }
+      }
+    }
+  }
+}

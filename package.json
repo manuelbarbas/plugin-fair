@@ -1,5 +1,5 @@
 {
-  "name": "@elizaos/plugin-fair",
+  "name": "@manuelbarbas/plugin-fair",
   "description": "FAIR Network integration on ElizaOS. This plugin allow to perform encrypted on-chain operations using the ElizaOS AI Agent",
   "version": "0.1.0",
   "type": "module",
@@ -90,5 +90,6 @@
       }
     }
   },
-  "gitHead": "d5bd5c43bfebeb7ac02f9e029f924cb6cd5c2ec7"
+  "gitHead": "d5bd5c43bfebeb7ac02f9e029f924cb6cd5c2ec7",
+  "npmPackage": "@elizaos/plugin-fair"
 }
